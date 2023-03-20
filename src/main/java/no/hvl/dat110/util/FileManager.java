@@ -65,11 +65,17 @@ public class FileManager {
 		// hash the replica
 		
 		// store the hash in the replicafiles array.
+
+		int size = numReplicas;
+		for (int i = 0; i < size; i++) {
+			String replica = filename + i;
+			replicafiles[i] = Hash.hashOf(replica);
+		}
 	}
 	
     /**
      * 
-     * @param bytesOfFile
+     * param bytesOfFile
      * @throws RemoteException 
      */
     public int distributeReplicastoPeers() throws RemoteException {
@@ -97,6 +103,18 @@ public class FileManager {
     	// call the saveFileContent() on the successor and set isPrimary=true if logic above is true otherwise set isPrimary=false
     	
     	// increment counter
+
+
+		createReplicaFiles();
+		for (int i = 0; i < numReplicas; i++) {
+			BigInteger replica = replicafiles[i];
+			NodeInterface successor = chordnode.findSuccessor(replica);
+			successor.addKey(replica);
+
+				successor.saveFileContent(filename, replica, bytesOfFile, i == index);
+
+			counter++;
+		}
 		return counter;
     }
 	
@@ -122,7 +140,14 @@ public class FileManager {
 		// get the metadata (Message) of the replica from the successor (i.e., active peer) of the file
 		
 		// save the metadata in the set activeNodesforFile.
-		
+
+
+		for (int i = 0; i < numReplicas; i++) {
+			BigInteger replica = replicafiles[i];
+			NodeInterface successor = chordnode.findSuccessor(replica);
+			Message message = successor.getFilesMetadata(replica);
+			activeNodesforFile.add(message);
+		}
 		return activeNodesforFile;
 	}
 	
@@ -141,8 +166,14 @@ public class FileManager {
 		// use the primaryServer boolean variable contained in the Message class to check if it is the primary or not
 		
 		// return the primary when found (i.e., use Util.getProcessStub to get the stub and return it)
+		NodeInterface primary = null;
+	for (Message a : activeNodesforFile) {
+		if (a.isPrimaryServer())
+			primary = Util.getProcessStub(a.getNameOfFile(), a.getPort());
+	}
+
 		
-		return null; 
+		return primary;
 	}
 	
     /**
@@ -238,7 +269,7 @@ public class FileManager {
 		return sizeOfByte;
 	}
 	/**
-	 * @param size the size to set
+	 *  size the size to set
 	 */
 	public void setSizeOfByte(String sizeOfByte) {
 		this.sizeOfByte = sizeOfByte;

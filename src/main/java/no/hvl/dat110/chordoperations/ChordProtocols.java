@@ -6,9 +6,11 @@ package no.hvl.dat110.chordoperations;
 import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 
+import no.hvl.dat110.util.Hash;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -155,9 +157,9 @@ public class ChordProtocols {
 		
 		try {
 			logger.info("Fixing the FingerTable for the Node: "+ chordnode.getNodeName());
-	
+
 			// get the finger table from the chordnode (list object)
-			
+
 			// ensure to clear the current finger table
 			
 			// get the address size from the Hash class. This is the modulus and our address space (2^mbit = modulus)
@@ -171,6 +173,32 @@ public class ChordProtocols {
 			// then: use chordnode to find the successor of k. (i.e., succnode = chordnode.findSuccessor(k))
 			
 			// check that succnode is not null, then add it to the finger table
+
+
+
+			List<NodeInterface> nodeInterface = chordnode.getFingerTable();
+			chordnode.getFingerTable().clear();
+			BigInteger addressize = Hash.addressSize();
+			int hashSize = Hash.bitSize();
+			for( int i = 0; i < hashSize; i++) {
+				BigInteger sucID = new BigInteger("2");
+				sucID = sucID.pow(i);
+
+				BigInteger sucNode = (chordnode.getNodeID().add(sucID)).mod(addressize);
+
+				NodeInterface succNode = null;
+
+					nodeInterface.add(chordnode);
+
+				if(succNode != null) {
+					nodeInterface.add(succNode);
+				}
+			}
+
+
+
+
+
 
 		} catch (RemoteException e) {
 			//
