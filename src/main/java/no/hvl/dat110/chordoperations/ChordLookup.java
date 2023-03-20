@@ -86,7 +86,7 @@ public class ChordLookup {
 		for(int i = fingerTable.size()-1; i >= 0; i--){
 			NodeInterface fingerInterface = fingerTable.get(i);
 			NodeInterface finger = Util.getProcessStub(fingerInterface.getNodeName(), fingerInterface.getPort());
-			if(Util.checkInterval(node.getNodeID().add(BigInteger.ONE), finger.getNodeID(), ID)){
+			if(Util.checkInterval(fingerInterface.getNodeID(), node.getNodeID().add(BigInteger.ONE), ID.subtract(BigInteger.ONE))){
 				return finger;
 			}
 
