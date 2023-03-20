@@ -43,10 +43,10 @@ public class ChordLookup {
 		// if logic returns false; call findHighestPredecessor(key)
 		
 		// do highest_pred.findSuccessor(key) - This is a recursive call until logic returns true
-		NodeInterface suc = node.findSuccessor(key);
+		NodeInterface suc = node.getSuccessor();
 		boolean returnBool = false;
 		NodeInterface a = Util.getProcessStub(suc.getNodeName(), suc.getPort());
-			if( Util.checkInterval(node.getNodeID().add(BigInteger.ONE), suc.getNodeID(), a.getNodeID()))
+			if( Util.checkInterval(key, node.getNodeID().add(BigInteger.ONE), a.getNodeID()))
 				returnBool = true;
 			else
 				returnBool = false;
