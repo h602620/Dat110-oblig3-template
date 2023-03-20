@@ -4,6 +4,7 @@
 package no.hvl.dat110.chordoperations;
 
 import java.math.BigInteger;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.util.List;
@@ -184,15 +185,31 @@ public class ChordProtocols {
 				BigInteger sucID = new BigInteger("2");
 				sucID = sucID.pow(i);
 
-				BigInteger sucNode = (chordnode.getNodeID().add(sucID)).mod(addressize);
+				BigInteger sucNodeMod = (chordnode.getNodeID().add(sucID)).mod(addressize);
 
 				NodeInterface succNode = null;
 
-					nodeInterface.add(chordnode);
+
+					try	{
+						succNode = chordnode.findSuccessor(sucNodeMod);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+
+
+
 
 				if(succNode != null) {
-					nodeInterface.add(succNode);
+					try {
+						nodeInterface.set(i,succNode);
+
+					} catch (IndexOutOfBoundsException e) {
+						nodeInterface.add(i,succNode);
+					}
+
 				}
+
+
 			}
 
 
