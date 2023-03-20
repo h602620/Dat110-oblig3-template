@@ -45,25 +45,22 @@ public class Util {
 		
 		// Task: given an identifier, id: check whether pred < id <= node
 
-		BigInteger lowerMod = lower.mod(new BigInteger("10"));
-		BigInteger upperMod = upper.mod(new BigInteger("10"));
-		BigInteger idMod = id.mod(new BigInteger("10"));
+	boolean cnd = false;
+	BigInteger mod = Hash.addressSize();
 
-		if(lowerMod.compareTo(upperMod) < 0) { // lower is lower than upper
-			if(idMod.compareTo(lowerMod) > 0 && idMod.compareTo(upperMod) <= 0) { // id is greater than lower and less than or equal to upper
-				return true;
-			}
-		} else if(lowerMod.compareTo(upperMod) > 0) { // lower is greater than upper
-			if(idMod.compareTo(upperMod) >= 0 && idMod.compareTo(lowerMod) < 0) { // id is greater than lower or less than or equal to upper
-				return true;
-			}
-		} else if(lowerMod.compareTo(upperMod) == 0) { // lower is equal to upper
-			if(idMod.compareTo(lowerMod) == 0) { // id is equal to lower
-				return true;
-			}
+	if(lower.compareTo(upper) > 0){
+		if(id.compareTo(upper) <= 0 ){
+			id = id.add(mod);
 		}
+		upper = upper.add(mod);
+	}
+	if(lower.compareTo(id) <= 0 && (id.compareTo(upper) <= 0)){
+		cnd = true;
+	}
+	return cnd;
 
-		return false;
+
+
 
 	}
 	
