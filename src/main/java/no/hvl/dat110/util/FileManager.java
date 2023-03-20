@@ -141,7 +141,7 @@ public class FileManager {
 		
 		// save the metadata in the set activeNodesforFile.
 
-
+		createReplicaFiles();
 		for (int i = 0; i < numReplicas; i++) {
 			BigInteger replica = replicafiles[i];
 			NodeInterface successor = chordnode.findSuccessor(replica);
